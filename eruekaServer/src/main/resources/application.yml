@@ -1,0 +1,10 @@
+server:
+  port: 8800
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    prefer-ip-address: true
+    leaseExpirationDurationInSeconds: 15
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8801/eureka/

@@ -1,0 +1,9 @@
+eureka:
+  client:
+    serviceUrl: #注册中心的注册地址
+      defaultZone: http://127.0.0.1:8800/eureka/,http://127.0.0.1:8801/eureka/
+server:
+  port: 8803  #服务端口号
+spring:
+  application:
+    name: user-provider #服务名称--调用的时候根据名称来调用该服务的方法
