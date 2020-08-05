@@ -1,8 +1,8 @@
-# 一文掌握Spring Cloud Erueka
+# 一文掌握Spring Cloud Eureka
 > 通过此程序你可以学到 
->1. 搭建高可用的erueka server
->2. 服务提供者把服务发布到erueka server上 
->3. 消费者应用接入erueka Server进行服务调用
+>1. 搭建高可用的Eureka server
+>2. 服务提供者把服务发布到Eureka server上 
+>3. 消费者应用接入Eureka Server进行服务调用
 >4. 消费方通过ribbon达到负载均衡的调用provider服务
 
 ### 一、项目结构
@@ -22,8 +22,8 @@ Spring Cloud目前最新的Release版本是：Hoxton.SR6，通过官网查的,�
 - springcloud版本：Hoxton.SR6
 - springboot版本：2.3.1.RELEASE
 
-### 三、搭建单机版eruekaServer
-- 在idea中通过Spring Initializr来创建springCloud项目eruekaServer（傻瓜式操作，不描述）
+### 三、搭建单机版EurekaServer
+- 在idea中通过Spring Initializr来创建springCloud项目EurekaServer（傻瓜式操作，不描述）
 
 - **pom.xml 引入spring-cloud-starter-netflix-eureka-server**
 ```
@@ -37,7 +37,7 @@ Spring Cloud目前最新的Release版本是：Hoxton.SR6，通过官网查的,�
     	<groupId>com.fqh</groupId>
     	<artifactId>server</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
-    	<name>eruekaServer</name>
+    	<name>EurekaServer</name>
     
     	<properties>
     		<java.version>1.8</java.version>
@@ -57,14 +57,14 @@ Spring Cloud目前最新的Release版本是：Hoxton.SR6，通过官网查的,�
     	</dependencies>
 ```
 
-- **EruekaServerApplication 加入@EnableEurekaServer注解**
+- **EurekaServerApplication 加入@EnableEurekaServer注解**
 ```
 @EnableEurekaServer
 @SpringBootApplication
-public class EruekaServerApplication {
+public class EurekaServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EruekaServerApplication.class, args);
+		SpringApplication.run(EurekaServerApplication.class, args);
 	}
 }
 ```
@@ -83,9 +83,9 @@ eureka:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8800/eureka/
 ```
-这里需要注意：单机版的erueka server的client配置里，需要把register-with-eureka与fetch-registry参数都设置成false
-表示此此erueka启动后不向自己进行注册，也不从自己读取注册信息。
-启动EruekaServerApplication，查看日志，发现eruekaServer已经启动
+这里需要注意：单机版的Eureka server的client配置里，需要把register-with-eureka与fetch-registry参数都设置成false
+表示此此Eureka启动后不向自己进行注册，也不从自己读取注册信息。
+启动EurekaServerApplication，查看日志，发现EurekaServer已经启动
 ```
 Setting the eureka configuration..
 2020-08-03 17:12:11.598  INFO 30533 --- [     Thread-383] o.s.c.n.e.server.EurekaServerBootstrap   : Eureka data center value eureka.datacenter is not set, defaulting to default
@@ -100,8 +100,8 @@ Setting the eureka configuration..
 打开浏览器输入localhost:8800,发现eureka已经启动，并且Instances currently registered with Eureka中注册的服务列表为空
 ![官方版本推荐](./img/singleEureka.png)
 
-### 四、服务提供者把服务发布到erueka server中
-- 在idea中通过Spring Initializr来创建springCloud项目eruekaProvider，这里我们搭建2台provider实例（eruekaProvider与eruekaProvider2）
+### 四、服务提供者把服务发布到Eureka server中
+- 在idea中通过Spring Initializr来创建springCloud项目EurekaProvider，这里我们搭建2台provider实例（EurekaProvider与EurekaProvider2）
 
 - **pom.xml 引入spring-cloud-starter-netflix-eureka-client**
 ```
@@ -114,7 +114,7 @@ Setting the eureka configuration..
 	<groupId>com.fqh</groupId>
 	<artifactId>provider</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>eruekaProvider</name>
+	<name>EurekaProvider</name>
 
 	<properties>
 		<java.version>1.8</java.version>
@@ -138,15 +138,15 @@ Setting the eureka configuration..
 		</dependency>
 ```
 
-- **EruekaProviderApplication 加入@EnableDiscoveryClient注解,并且提供getUser方法对外提供Rest服务（注意这里返回信息的from显示provider-one）**
+- **EurekaProviderApplication 加入@EnableDiscoveryClient注解,并且提供getUser方法对外提供Rest服务（注意这里返回信息的from显示provider-one）**
 ```
 @RestController
 @EnableDiscoveryClient
 @SpringBootApplication
-public class EruekaProviderApplication {
+public class EurekaProviderApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EruekaProviderApplication.class, args);
+		SpringApplication.run(EurekaProviderApplication.class, args);
 	}
 	/**
 	 * 假如这个客户端要提供一个getUser的方法
@@ -179,11 +179,11 @@ spring:
 ```
 ##### 重复上面操作，搭建另外的一个provider实例
 其中注意两点
-- provide2 的EruekaProvider2Application的getUser方法里的from的值为：provider-two
+- provide2 的EurekaProvider2Application的getUser方法里的from的值为：provider-two
 - provider2 的application yml配置文件的server.port 端口为8803
 
 **分别启动 两个provider程序，查看启动日志**
-发现 Registering application USER-PROVIDER with eureka with status UP，说明已经把user-provider服务发布到了erueka服务上了。
+发现 Registering application USER-PROVIDER with eureka with status UP，说明已经把user-provider服务发布到了Eureka服务上了。
 ```
  Discovery Client initialized at timestamp 1596450682466 with initial instances count: 1
 2020-08-03 18:31:22.470  INFO 32144 --- [           main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application USER-PROVIDER with eureka with status UP
@@ -191,16 +191,16 @@ spring:
 2020-08-03 18:31:22.472  INFO 32144 --- [nfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_USER-PROVIDER/192.168.0.19:user-provider:8802: registering service...
 2020-08-03 18:31:22.517  INFO 32144 --- [nfoReplicator-0] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_USER-PROVIDER/192.168.0.19:user-provider:8802 - registration status: 204
 ```
-- 查看eruekaServer,发现已经接入了USER-PROVIDER服务，该服务有如下两个服务提供者
+- 查看EurekaServer,发现已经接入了USER-PROVIDER服务，该服务有如下两个服务提供者
 ```
 UP (2) - 192.168.0.19:user-provider:8802 , 192.168.0.19:user-provider:8803
 ```
-![eruekaServer](./img/providerInerueka.png)
+![EurekaServer](./img/providerInEureka.png)
 
 
-### 五、消费者接入erueka server进行服务调用，并使用ribbon让consumer负载均衡的去调用erueka中的服务provider
-- 在idea中通过Spring Initializr来创建springCloud项目eruekaConsumer
-- eruekaConsumer pom.xml文件
+### 五、消费者接入Eureka server进行服务调用，并使用ribbon让consumer负载均衡的去调用Eureka中的服务provider
+- 在idea中通过Spring Initializr来创建springCloud项目EurekaConsumer
+- EurekaConsumer pom.xml文件
 ```
 <parent>
 		<groupId>org.springframework.boot</groupId>
@@ -211,7 +211,7 @@ UP (2) - 192.168.0.19:user-provider:8802 , 192.168.0.19:user-provider:8803
 	<groupId>com.fqh</groupId>
 	<artifactId>consumer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>eruekaConsumer</name>
+	<name>EurekaConsumer</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
@@ -237,7 +237,7 @@ UP (2) - 192.168.0.19:user-provider:8802 , 192.168.0.19:user-provider:8803
 		</dependency>
 ```
 
-- eruekaConsumer EurekaConsumerApplication文件
+- EurekaConsumer EurekaConsumerApplication文件
 这里需要注意
 - 我们实例化了restTemplateBean类，并用ribbon的@LoadBalanced注解进行修饰
 - getUserInfo方法通过restTemplate进行user—service服务的getUser方法(http://user-provider/getUser?id=xx)调用
@@ -247,13 +247,13 @@ UP (2) - 192.168.0.19:user-provider:8802 , 192.168.0.19:user-provider:8803
 @RestController
 @EnableEurekaClient
 @SpringBootApplication
-public class EruekaConsumerApplication {
+public class EurekaConsumerApplication {
 
 	@Autowired
 	RestTemplate restTemplate;
 
 	public static void main(String[] args) {
-		SpringApplication.run(EruekaConsumerApplication.class, args);
+		SpringApplication.run(EurekaConsumerApplication.class, args);
 	}
 
 	/**
@@ -285,7 +285,7 @@ spring:
     name: service-consumer #服务名称--调用的时候根据名称来调用该服务的方法
 
 ```
-启动EruekaConsumerApplication，发现已经连上eruekaServer
+启动EurekaConsumerApplication，发现已经连上EurekaServer
 ```
 Registering application SERVICE-CONSUMER with eureka with status UP
 2020-08-03 18:57:29.437  INFO 32764 --- [           main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1596452249437, current=UP, previous=STARTING]
@@ -299,13 +299,13 @@ Registering application SERVICE-CONSUMER with eureka with status UP
 
 ![负载均衡](./img/robinLoadBlance.gif)
 
-### 六、搭建集群高可用版本erueKaServer
-现实中，我们的erueka server端不可能单点运行,需要至少部署2个节点的erueka server来实现服务高可用，其实搭建erueka server集群也很简单
+### 六、搭建集群高可用版本EurekaServer
+现实中，我们的Eureka server端不可能单点运行,需要至少部署2个节点的Eureka server来实现服务高可用，其实搭建Eureka server集群也很简单
 需要设置register-with-eureka 与fetch-registry都为true（默认），并相互配置service-url的defaultZone为对方的eruek Server订阅地址
-**- 搭建eruekaServer2 （端口8801）** 
+**- 搭建EurekaServer2 （端口8801）** 
 搭建项目项目过程与第三步一致，主要不同点在于application.yml配置处
 - 配置application.yml，
-单点的eruekaServer我们配置了register-with-eureka 与fetch-registry 都为false，这里我们去掉这两项，采用他们的默认配置true
+单点的EurekaServer我们配置了register-with-eureka 与fetch-registry 都为false，这里我们去掉这两项，采用他们的默认配置true
 ，这里配置的defaultZoneurl为：http://${eureka.instance.hostname}:8800/eureka/
 ```
 server:
@@ -319,7 +319,7 @@ eureka:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8800/eureka/
 ```
-**- 改造eruekaServer的application.yml（端口8800）如下：** 
+**- 改造EurekaServer的application.yml（端口8800）如下：** 
 ```
 server:
   port: 8800
@@ -332,7 +332,7 @@ eureka:
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8801/eureka/
 ```
-启动两个eruekaserver，访问8800与8801两个台eruekaServer发现两个server已经相互注册。实现了高可用。
+启动两个Eurekaserver，访问8800与8801两个台EurekaServer发现两个server已经相互注册。实现了高可用。
 ```
 Instances currently registered with Eureka
 Application 	AMIs	 Availability Zones   	Status
@@ -340,10 +340,10 @@ UNKNOWN	       n/a (2)	     (2)	               UP (2)  - 192.168.0.19:8800 , 192
 ```
 
 
-**- 改造eruekaProvider 与eruekaProvider的application.yml的erueka DefaultZone配置，多个连接用逗号分隔** 
+**- 改造EurekaProvider 与EurekaProvider的application.yml的Eureka DefaultZone配置，多个连接用逗号分隔** 
 ```
 defaultZone: http://127.0.0.1:8800/eureka/,http://127.0.0.1:8801/eureka/
 ```
 
-最终的eruekaserver中的服务列表
+最终的Eurekaserver中的服务列表
 ![](./img/final.png)
